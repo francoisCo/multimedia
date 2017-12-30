@@ -6,15 +6,6 @@ Display features evolution though time of 06-11-22.mp4
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
-
-features_nb = 15
-features_data = np.zeros((0, features_nb))
-headers = []
-
-# Get video and frame rate
-video = cv2.VideoCapture('06-11-22.mp4')
-fps = video.get(cv2.CAP_PROP_FPS)
 
 
 def computeFeatures(BGR_image):
@@ -86,31 +77,5 @@ def displayFigureSeconds(points, seq_seconds, title):
               "End of debate"])
     ax.set_title(title)
     ax.set_xlabel("time (seconds)")
-    ax.set_ylabel("cluster value")
+    ax.set_ylabel("Value")
     plt.show()
-
-
-# Extrat features from video frames
-nbrFrame = 0
-ret = True
-while ret:
-    ret, frame = video.read()
-    nbrFrame += 1
-    videotime = nbrFrame / fps
-    if (nbrFrame % 25 == 1):
-        features, headers = computeFeatures(frame)
-        features_data = np.append(features_data, [features], axis=0)
-
-# Display features through time
-x = np.arange(1, videotime + 1)
-for i in range(0, features_nb):
-    displayFigureSeconds(features_data[:, i], x, headers[i])
-
-# Compute Kmeans clustering
-kmeans = KMeans(n_clusters=3, random_state=0).fit(features_data)
-
-# Display clustering through time
-displayFigureSeconds(kmeans.labels_, x, "clusters (k-means)")
-
-# Export Dataset
-#np.savetxt("data.out", features_data, delimiter=",")

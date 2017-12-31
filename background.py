@@ -67,15 +67,26 @@ def displayFigureSeconds(points, seq_seconds, title):
     @param seq_seconds: sequence of seconds
     @title: title of the figure
     """
-    fig = plt.figure(figsize=(8, 4), dpi=100)
-    ax = fig.add_subplot(111)
-    ax.plot(seq_seconds, points, 'o')
-    L1 = ax.axvline(x=11, ls="dashed", c="r")
-    L2 = ax.axvline(x=85, ls="dashed", c="g")
-    L3 = ax.axvline(x=39*60, ls="dashed", c="y")
-    ax.legend([L1, L2, L3], ["End of opening titles", "End of TV coverage",
-              "End of debate"])
-    ax.set_title(title)
-    ax.set_xlabel("time (seconds)")
-    ax.set_ylabel("Value")
+    plt.figure(figsize=(11, 4), dpi=100)
+    plt.plot(seq_seconds, points, 'o')
+
+    plt.axvline(x=1, ls="dashed", c="red")
+    plt.axvline(x=12, ls="dashed", c="green")
+    plt.axvline(x=45, ls="dashed", c="yellow")
+    plt.axvline(x=62, ls="dashed", c="blue")
+    plt.axvline(x=85, ls="dashed", c="orange")
+    plt.axvline(x=39*60+1, ls="dashed", c="violet")
+
+    plt.xscale('log')
+
+    plt.xticks([1, 3, 12, 25, 45, 49, 62, 65, 85, 500, 2341],
+               ["1''", "Beginning credits", "12''",
+               "TV coverage", "45''",
+                "Artificial video", "1'02''",
+                "Cont. of TV coverage", "1'25''",
+                "Main debate", "End credits at 39'01''"], rotation=80)
+
+    plt.title(title)
+    plt.xlabel("Time")
+    plt.ylabel("Value")
     plt.show()

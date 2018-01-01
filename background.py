@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Display features evolution though time of 06-11-22.mp4
+Background functions
 @author: francois courbier
 """
 import numpy as np
@@ -58,6 +58,32 @@ def computeFeatures(BGR_image):
                "Mean of Saturation", "Variance of Saturation",
                "Mean of Value", "Variance of Value")
     return features, headers
+
+
+def extractDataFromVideo(videofile='06-11-22.mp4', features_nb=15):
+    """Return dataset X, headers, and videotime
+
+    @videofile: filename of the video to process
+    @features_nb: number of features
+    """
+    X = np.zeros((0, features_nb))
+
+    # Get video and frame rate
+    video = cv2.VideoCapture('06-11-22.mp4')
+    fps = video.get(cv2.CAP_PROP_FPS)
+
+    # Extract features from video frames
+    nbrFrame = 0
+    ret = True
+    while ret:
+        ret, frame = video.read()
+        nbrFrame += 1
+        if (ret):
+            features, headers = computeFeatures(frame)
+            X = np.append(X, [features], axis=0)
+    video.release()
+    videotime = int(nbrFrame / fps)
+    return X, headers, videotime
 
 
 def displayFigureSeconds(points, seq_seconds, title):

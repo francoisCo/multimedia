@@ -19,10 +19,12 @@ else:
     # Case no command line argument
     ml.extractDataFromVideo()
 
+
 # Display features through time
 x = np.arange(1, ml.videotime + 1)
 for i in range(0, ml.features_nb):
     ml.displayFigureSeconds(ml.X[::25, i], x, ml.headers[i])
+
 
 # Compute and display Kmeans clustering
 kmeans = KMeans(n_clusters=3, random_state=0).fit(ml.X[::25, [2, 3, 5, 9]])
@@ -34,3 +36,6 @@ X_sub = ml.X[:, [2, 3, 5, 9]]
 
 # Compute ARI scores for all subdatasets (modulo 25)
 ml.computeARI(X_sub, kmeans, plot=True)
+
+# Use of propagate labels
+ml.computeARI(X_sub, kmeans, plot=True, propagation=True)

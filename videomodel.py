@@ -146,43 +146,48 @@ class VideoModel:
         plt.ylabel("Value")
         plt.show()
 
-    def computeARI(self, X, kmeans, plot=False, propagation=False):
+    def computeARI(self, X, kmeans, plot=False):
         """Compute ARI scores for all subdatasets (modulo fps) and
-        return ARI mean
+        return ARI mean and ARI mean after label propagation
 
         @param X: dataset
         @param kmeans: kmeans clustering algorithm
         @param labels_true : true labels
         """
         ARI = []
-        if (propagation):
-            with_propagation = " (with propagation)"
-        else:
-            with_propagation = ""
+        ARI_propagation = []
 
         for i in range(self.fps):
             kmeans.fit(X[i::self.fps, :])
             labels_pred = kmeans.labels_
 
-            if propagation:
-                labels_pred = np.copy(kmeans.labels_)
-                for k in range(labels_pred.shape[0]):
-                    if k > 0 and k+1 < labels_pred.shape[0] and \
-                        labels_pred[k] != labels_pred[k+1] and \
-                        labels_pred[k] != labels_pred[k-1] and \
-                            labels_pred[k-1] == labels_pred[k+1]:
-                                labels_pred[k] = labels_pred[k-1]
+            labels_pred_prop = np.copy(kmeans.labels_)
+            for k in range(labels_pred_prop.shape[0]):
+                if k > 0 and k+1 < labels_pred_prop.shape[0] and \
+                    labels_pred_prop[k] != labels_pred_prop[k+1] and \
+                    labels_pred_prop[k] != labels_pred_prop[k-1] and \
+                        labels_pred_prop[k-1] == labels_pred_prop[k+1]:
+                            labels_pred_prop[k] = labels_pred_prop[k-1]
 
             ARI.append(metrics.adjusted_rand_score(self.labels_true,
                                                    labels_pred))
+            ARI_propagation.append(
+                    metrics.adjusted_rand_score(self.labels_true,
+                                                labels_pred_prop))
 
         ARI_mean = np.mean(ARI)
+        ARI_prop_mean = np.mean(ARI_propagation)
         if plot is True:
-            plt.title("Adjusted rand score"+with_propagation)
-            plt.plot(range(self.fps), ARI)
+            plt.title("Adjusted rand score")
+            plt.plot(range(self.fps), ARI, label="ARI")
+            plt.plot(range(self.fps), ARI_propagation,
+                     label="ARI after label propagation")
             plt.xlabel("Subdataset (nth frame chosen per second)")
             plt.ylabel("ARI value")
+            plt.legend()
             plt.show()
-            print("Average ARI%s: %.2f %%" % (with_propagation, ARI_mean))
+            print("Average ARI: %.2f" % (ARI_mean))
+            print("Average ARI after label propagation: %.2f"
+                  % (ARI_prop_mean))
 
-        return ARI_mean
+        return ARI_mean, ARI_prop_mean

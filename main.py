@@ -36,6 +36,3 @@ X_sub = ml.X[:, [2, 3, 5, 9]]
 
 # Compute ARI scores for all subdatasets (modulo 25)
 ml.computeARI(X_sub, kmeans, plot=True)
-
-# Use of propagate labels
-ml.computeARI(X_sub, kmeans, plot=True, propagation=True)

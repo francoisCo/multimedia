@@ -9,6 +9,9 @@ from sklearn.cluster import KMeans
 import sys
 import itertools as it
 
+import time
+start_time = time.time()
+
 # Instanciate model object
 ml = VideoModel(videofile="06-11-22.mp4", features_nb=15)
 
@@ -33,7 +36,6 @@ for k in range(1, ml.features_nb + 1):
 print("|"*100)
 progress_rate = 0
 ARI_res = np.zeros((0, 3))
-
 sublists_nb = len(features_sublists)
 for k in range(sublists_nb):
     # Keep only relevant features
@@ -52,3 +54,4 @@ for k in range(sublists_nb):
 
 np.savetxt('ARI.out', ARI_res, delimiter=',')
 print("\nARI saved in ARI.out")
+print("--- %s seconds ---" % (time.time() - start_time))

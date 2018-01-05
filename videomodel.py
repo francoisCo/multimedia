@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Background functions
+videomodel class
 @author: francois courbier
 """
 import numpy as np
@@ -23,7 +23,7 @@ class VideoModel:
         labels_true (numpy array): sequence of true labels
     """
     def __init__(self, videofile, features_nb):
-        self.X = np.array((0, features_nb))
+        self.X = np.zeros((0, features_nb))
         self.headers = ["Mean of gray", "Variance of gray",
                         "Mean of gradient of gray",
                         "Mean of blue", "Variance of blue",

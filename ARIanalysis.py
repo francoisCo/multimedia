@@ -19,11 +19,12 @@ for k in range(1, ml.features_nb + 1):
         list(it.combinations(features_list, k))
 
 # Get ARI scores and sort them
-ARI_scores = np.loadtxt("ARI.out", delimiter=',')
+ARI_scores = np.loadtxt("ARI_norm.out", delimiter=',')
 ARI = ARI_scores[:, 1]
 ARI_prop = ARI_scores[:, 2]
 ARI_sort_index = np.flip(np.argsort(ARI), 0)
 ARI_prop_sort_index = np.flip(np.argsort(ARI_prop), 0)
+ARI_sort = [ARI[k] for k in ARI_sort_index]
 
 # Display top of ARI scores
 print("Ranking | ARI score |     Features    | ARI propagation |     Features")
@@ -48,17 +49,24 @@ print("Rank of all features: %d" % all_feat_rank)
 # First 5 features list
 for k in range(len(features_ranking)):
     if (len(features_ranking[k]) == 5):
-        print("First 5 features list at rank %d: %s" %
-              (k, str(features_ranking[k])))
+        print("First 5 features list at rank %d: %s, ARI: %.4f" %
+              (k, str(features_ranking[k]), ARI[k]))
         break
 
 # Number of features per ARI ranking
 features_ranking_len = [len(features_ranking[k])
                         for k in range(len(features_ranking))]
-plt.plot(range(1, 101), features_ranking_len[:100])
+plt.plot(range(1, 601), features_ranking_len[:600])
 plt.title("Number of features per ARI ranking")
 plt.xlabel("ARI ranking")
 plt.ylabel("Number of features")
+plt.show()
+
+# ARI
+plt.plot(range(1, 600 + 1), ARI_sort[:600])
+plt.title("ARI")
+plt.xlabel("ARI ranking")
+plt.ylabel("ARI")
 plt.show()
 
 # Distribution of ARI
